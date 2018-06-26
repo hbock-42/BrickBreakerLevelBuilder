@@ -291,6 +291,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08c71c20328cb094187da9fbdc14330d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _minColor: {r: 0.014359593, g: 1, b: 0, a: 1}
+  _maxColor: {r: 0.934319, g: 0, b: 1, a: 1}
   _buttonPrefab: {fileID: 1395443781876750, guid: d5a168c7c06019b478b06eac2a99968c,
     type: 2}
   _gridCanvasRectTransform: {fileID: 498192142}
