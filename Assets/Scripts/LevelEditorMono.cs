@@ -243,7 +243,7 @@ public class LevelEditorMono : MonoBehaviour
 		{
 			for (var x = 0; x < LevelInfos.GridWidth; x++)
 			{
-				var lvlPercent = (float) (_brickLevelArray[y, x] - min) / (float)deltaLvl;
+				var lvlPercent = (_brickLevelArray[y, x] - min) / (float)deltaLvl;
 				var color = _brickLevelArray[y, x] == 0 ? Color.white : Color.HSVToRGB(hMin + (deltaHue * lvlPercent), sMin + (deltaSaturation * lvlPercent), vMin + (deltaValue * lvlPercent));
 				_buttonsImageArray[y, x].color = color;
 			}
