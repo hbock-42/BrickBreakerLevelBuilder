@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using System.Xml;
 using System.Xml.Linq;
+using UnityEngine;
 
 public static class LevelExport
 {
@@ -15,17 +15,17 @@ public static class LevelExport
 	{
 		var xDoc = FormatXml(levelInfosExport);
 		xDoc.Save(Path.Combine(SetupStrings.LevelSavePath, _fileName));
-		//using (var fs = File.OpenWrite(Path.Combine(SetupStrings.LevelSavePath, _fileName)))
-		//{
-			
-		//}
 	}
 
 	private static XDocument FormatXml(LevelInfosExport levelInfosExport)
 	{
 		var xDoc = new XDocument();
 
-		xDoc.Add(new XElement("Level"));
+		xDoc.Add(new XElement(
+			"Level",
+			new XAttribute("Width", levelInfosExport.BrickLevelArray.GetLength(1)),
+			new XAttribute("Height", levelInfosExport.BrickLevelArray.GetLength(0))
+		));
 		var levelElem = xDoc.Element("Level");
 		// ReSharper disable once PossibleNullReferenceException
 		levelElem.Value = Int2X2ToCsv(levelInfosExport.BrickLevelArray);
@@ -40,6 +40,7 @@ public static class LevelExport
 	private static string Int2X2ToCsv(int[,] intMatrix)
 	{
 		var csvSb = new StringBuilder();
+
 		var yMax = intMatrix.GetLength(0);
 		var xMax = intMatrix.GetLength(1);
 		for (var y = 0; y < yMax; y++)

@@ -3,13 +3,11 @@ public class LevelInfosExport
 {
 	#region Fields
 
-	private int[,] _brickLevelArray;
-
 	#endregion
 
 	#region Properties
 
-	public int[,] BrickLevelArray { get; set; }
+	public int[,] BrickLevelArray { get; private set; }
 
 	#endregion
 
@@ -17,7 +15,7 @@ public class LevelInfosExport
 
 	public LevelInfosExport(int[,] brickLevelArray)
 	{
-		_brickLevelArray = brickLevelArray;
+		BrickLevelArray = brickLevelArray;
 	}
 
 	#endregion

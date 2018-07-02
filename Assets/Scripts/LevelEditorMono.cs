@@ -251,5 +251,11 @@ public class LevelEditorMono : MonoBehaviour
 
 	}
 
+	public void OnExportButtonClicked()
+	{
+		var levelInfosExport = new LevelInfosExport(_brickLevelArray);
+		LevelExport.ToXml(levelInfosExport);
+	}
+
 	#endregion
 }
