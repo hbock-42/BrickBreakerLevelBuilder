@@ -34,7 +34,7 @@ public class HomeMenuManager : MonoBehaviour
 		LoadLevelEditorScene();
 	}
 
-	private void LoadLevelEditorScene()
+	private static void LoadLevelEditorScene()
 	{
 		SceneManager.LoadScene(LevelEditorSceneName);
 	}

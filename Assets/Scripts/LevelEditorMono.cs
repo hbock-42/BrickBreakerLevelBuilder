@@ -1,9 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public class Pair
+{
+	public int X;
+	public int Y;
+}
+
 public class LevelEditorMono : MonoBehaviour
 {
+	
+
 	#region Serialized Fields
 
 	[SerializeField] [Tooltip("Color of the brick with the lowest level")] private Color _minColor;
@@ -12,6 +21,7 @@ public class LevelEditorMono : MonoBehaviour
 	[SerializeField] private GameObject _buttonPrefab;
 	[SerializeField] private RectTransform _gridCanvasRectTransform;
 	[SerializeField] private GameObject _gridCellsGameObject;
+	[SerializeField] private GameObject _menuPanel;
 
 	#endregion
 
@@ -63,6 +73,10 @@ public class LevelEditorMono : MonoBehaviour
 		}
 	}
 
+	public List<Pair> Selected { get; set; }
+
+	private bool MultiSelection { get; set; }
+
 	#endregion
 
 	#region Monobehaviour
@@ -79,6 +93,8 @@ public class LevelEditorMono : MonoBehaviour
 		_brickLevelArray = new int[LevelInfos.GridHeight, LevelInfos.GridWidth];
 
 		InstantiateCellButtons();
+
+		Selected = new List<Pair>();
 	}
 
 	private void Update()
@@ -118,6 +134,10 @@ public class LevelEditorMono : MonoBehaviour
 
 	private void OnButtonClick(int x, int y)
 	{
+		ClearSelected();
+
+		if (CheckMultiSelection(x, y)) return;
+
 		// Hide the frame of the previously selected button
 		_buttonsFrameGameObjectsArray[_yCurrent, _xCurrent].SetActive(false);
 
@@ -127,6 +147,41 @@ public class LevelEditorMono : MonoBehaviour
 		_buttonsFrameGameObjectsArray[y, x].SetActive(true);
 	}
 
+	private bool CheckMultiSelection(int xNew, int yNew)
+	{
+		if (!(MultiSelection = Input.GetKey(KeyCode.LeftShift))) return false;
+
+		var xDelta = xNew - _xCurrent;
+		var yDelta = yNew - _yCurrent;
+
+		var signX = Math.Sign(xDelta);
+		var signY = Math.Sign(yDelta);
+
+		for (var y = 0; y <= Math.Abs(yDelta); y++)
+		{
+			for (var x = 0; x <= Math.Abs(xDelta); x++)
+			{
+				Selected.Add(new Pair
+				{
+					X = _xCurrent + x * signX,
+					Y = _yCurrent + y * signY
+				});
+				_buttonsFrameGameObjectsArray[_yCurrent + y * signY, _xCurrent + x * signX].SetActive(true);
+			}
+		}
+
+		return true;
+	}
+
+	private void ClearSelected()
+	{
+		foreach (var pair in Selected)
+		{
+			_buttonsFrameGameObjectsArray[pair.Y, pair.X].SetActive(false);
+		}
+		Selected.Clear();
+	}
+
 	private void ManageInputs()
 	{
 		if (Math.Abs(Input.mouseScrollDelta.y) > Mathf.Epsilon)
@@ -134,14 +189,34 @@ public class LevelEditorMono : MonoBehaviour
 			OnMouseScrolled((int)Input.mouseScrollDelta.y);
 		}
 
+		if (Input.GetKeyUp(KeyCode.Escape))
+		{
+			_menuPanel.SetActive(!_menuPanel.activeSelf);
+		}
 	}
 
 	private void OnMouseScrolled(int deltaValue)
 	{
-		_brickLevelArray[_yCurrent, _xCurrent] += deltaValue;
-		if (_brickLevelArray[_yCurrent, _xCurrent] < 0) _brickLevelArray[_yCurrent, _xCurrent] = 0;
-		_buttonsTextArray[_yCurrent, _xCurrent].text = _brickLevelArray[_yCurrent, _xCurrent].ToString();
+		if (MultiSelection)
+		{
+			foreach (var pair in Selected)
+			{
+				SetBrickInfo(pair.X, pair.Y, deltaValue);
+			}
+		}
+		else
+		{
+			SetBrickInfo(_xCurrent, _yCurrent, deltaValue);
+		}
+
 		UpdateButtonColor();
+	}
+
+	private void SetBrickInfo(int x, int y, int deltaValue)
+	{
+		_brickLevelArray[y, x] += deltaValue;
+		if (_brickLevelArray[y, x] < 0) _brickLevelArray[y, x] = 0;
+		_buttonsTextArray[y, x].text = _brickLevelArray[y, x].ToString();
 	}
 
 	private void UpdateButtonColor()

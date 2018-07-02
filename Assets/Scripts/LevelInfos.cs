@@ -24,13 +24,4 @@ public static class LevelInfos
 	}
 
 	#endregion
-
-	#region Methods
-
-	//public static void Save()
-	//{
-	//	//System.Xml.Linq
-	//}
-
-	#endregion
 }
