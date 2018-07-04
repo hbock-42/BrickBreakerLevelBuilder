@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -253,7 +254,7 @@ public class LevelEditorMono : MonoBehaviour
 
 	public void OnExportButtonClicked()
 	{
-		var levelInfosExport = new LevelInfosExport(_brickLevelArray);
+		var levelInfosExport = new Level(_brickLevelArray);
 		LevelExport.ToXml(levelInfosExport);
 	}
 

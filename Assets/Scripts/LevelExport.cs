@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
+using Data;
 
 public static class LevelExport
 {
@@ -10,24 +11,24 @@ public static class LevelExport
 	/// <summary>
 	/// Convert level informations to an Xml file
 	/// </summary>
-	public static void ToXml(LevelInfosExport levelInfosExport)
+	public static void ToXml(Level level)
 	{
-		var xDoc = FormatXml(levelInfosExport);
+		var xDoc = FormatXml(level);
 		xDoc.Save(Path.Combine(SetupStrings.LevelSavePath, _fileName));
 	}
 
-	private static XDocument FormatXml(LevelInfosExport levelInfosExport)
+	private static XDocument FormatXml(Level level)
 	{
 		var xDoc = new XDocument();
 
 		xDoc.Add(new XElement(
 			"Level",
-			new XAttribute("Width", levelInfosExport.BrickLevelArray.GetLength(1)),
-			new XAttribute("Height", levelInfosExport.BrickLevelArray.GetLength(0))
+			new XAttribute("Width", level.Width),
+			new XAttribute("Height", level.Height)
 		));
 		var levelElem = xDoc.Element("Level");
 		// ReSharper disable once PossibleNullReferenceException
-		levelElem.Value = Int2X2ToCsv(levelInfosExport.BrickLevelArray);
+		levelElem.Value = Int2X2ToCsv(level.BrickLevelArray);
 		return xDoc;
 	}
 
